@@ -10,8 +10,11 @@ RUN curl -sSLo /tmp/linkerd-await https://github.com/linkerd/linkerd-await/relea
     chmod 755 /tmp/linkerd-await
 
 FROM alpine:3.18
+WORKDIR /app
 ARG RCLONE_VER=v1.64.0
 RUN apk update && apk add postgresql
 COPY --from=build /app/rclone-${RCLONE_VER}-linux-amd64/rclone /usr/local/bin/
 COPY --from=build /tmp/linkerd-await /usr/local/bin/
+COPY backup.sh /app/backup.sh
 ENTRYPOINT ["linkerd-await", "--shutdown", "--"]
+CMD ["/app/backup.sh"]
