@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.18
 
 ARG RCLONE_VER=v1.64.0
 ARG LINKERD_AWAIT_VERSION=v0.2.7
