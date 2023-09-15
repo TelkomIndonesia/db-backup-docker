@@ -22,7 +22,14 @@ rclone_s3() {
         --stats=10s \
         $@
 }
-TIMESTAMP=$(date '+%Y-%-m-%d')
-remote_path=":s3:backup-vira-sh/$APP_NAME/$DB_INSTANCE_NAME/$DB_NAME/$TIMESTAMP"
 
-PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_HOST --no-publications --no-owner -U $DB_USERNAME -O -x -Fc $DB_NAME | rclone_s3 rcat "$remote_path"
+TIMESTAMP=$(date '+%Y-%-m-%d')
+remote_path=":s3:${S3_BUCKET:-"bucket"}/$APP_NAME/$DB_INSTANCE_NAME/$DB_NAME/$TIMESTAMP"
+
+PGPASSWORD=$DB_PASSWORD pg_dump \
+    -h $DB_HOST \
+    --no-publications \
+    --no-owner \
+    -U $DB_USERNAME \
+    -O -x -Fc $DB_NAME |
+    rclone_s3 rcat "$remote_path"
