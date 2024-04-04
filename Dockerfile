@@ -1,4 +1,4 @@
-FROM alpine:3.18 as build
+FROM alpine:3.19 as build
 
 ARG RCLONE_VER=v1.64.0
 ARG LINKERD_AWAIT_VERSION=v0.2.7
@@ -9,10 +9,10 @@ RUN unzip rclone-${RCLONE_VER}-linux-amd64.zip && rm rclone-${RCLONE_VER}-linux-
 RUN curl -sSLo /tmp/linkerd-await https://github.com/linkerd/linkerd-await/releases/download/release%2F${LINKERD_AWAIT_VERSION}/linkerd-await-${LINKERD_AWAIT_VERSION}-amd64 && \
     chmod 755 /tmp/linkerd-await
 
-FROM alpine:3.18
+FROM alpine:3.19
 WORKDIR /app
 ARG RCLONE_VER=v1.64.0
-RUN apk update && apk add postgresql
+RUN apk update && apk add postgresql16
 COPY --from=build /app/rclone-${RCLONE_VER}-linux-amd64/rclone /usr/local/bin/
 COPY --from=build /tmp/linkerd-await /usr/local/bin/
 COPY backup.sh /app/backup.sh
